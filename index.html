@@ -148,8 +148,8 @@
 <div id="key-screen">
   <div class="logo">L</div>
   <h1>LOGIASSIST</h1>
-  <p>Ingresá tu API Key de Anthropic<br/>para activar el asistente.</p>
-  <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+  <p>Ingresá tu API Key de Google Gemini<br/>para activar el asistente.</p>
+  <input type="password" id="api-key-input" placeholder="AIza..." />
   <button onclick="activar()">ACTIVAR LOGIASSIST</button>
   <div id="key-error">⚠️ Clave inválida. Verificá que sea correcta.</div>
   <p class="note">Tu clave no se guarda en ningún servidor.<br/>Solo se usa localmente en esta sesión.</p>
@@ -212,7 +212,7 @@ const SYSTEM = `Sos LogiAssist, el asistente conversacional inteligente de OCASA
 - Accidente (SEG-01): 1) Llamar 911 si hay heridos. 2) Interno 205. 3) Preservar área. 4) Formulario SEG-01.
 - Pedido entregado pero cliente no lo recibió: 1) Verificar comprobante de entrega (foto o firma). 2) Contactar al transportista. 3) Registrar reclamo con código RCL. 4) Notificar al cliente con número de reclamo dentro de las 2 horas.
 
-Si te preguntan por un pedido o SKU que no está en la base de datos, indicalo claramente y sugerí los pasos a seguir según el procedimiento más parecido. Mantené el contexto de la conversación. Sé directo y útil.`;
+Si te preguntan por un pedido o SKU que no está en la base de datos, indicalo claramente y sugerí los pasos a seguir. Mantené el contexto de la conversación. Sé directo y útil.`;
 
 let apiKey = '';
 let history = [];
@@ -221,7 +221,7 @@ let loading = false;
 function activar() {
   const k = document.getElementById('api-key-input').value.trim();
   const errEl = document.getElementById('key-error');
-  if (!k || k.length < 20) {
+  if (!k || k.length < 10) {
     errEl.style.display = 'block';
     return;
   }
@@ -261,26 +261,22 @@ async function sendMessage() {
   const empty = document.getElementById('empty');
   if (empty) empty.remove();
 
-  history.push({ role: 'user', content: text });
+  history.push({ role: 'user', parts: [{ text }] });
   appendMsg('user', text);
   showTyping();
 
   try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-haiku-4-5-20251001',
-        max_tokens: 1024,
-        system: SYSTEM,
-        messages: history
-      })
-    });
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: SYSTEM }] },
+          contents: history
+        })
+      }
+    );
 
     const data = await res.json();
 
@@ -294,8 +290,8 @@ async function sendMessage() {
       return;
     }
 
-    const reply = data.content?.[0]?.text || 'Respuesta vacía.';
-    history.push({ role: 'assistant', content: reply });
+    const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Respuesta vacía.';
+    history.push({ role: 'model', parts: [{ text: reply }] });
     hideTyping();
     appendMsg('bot', reply);
 
