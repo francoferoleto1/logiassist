@@ -12,41 +12,42 @@
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 16px;
     }
-    #key-screen {
-      width: 100%; max-width: 420px;
+
+    /* LOGIN */
+    #login-screen {
+      width: 100%; max-width: 400px;
       background: #13161c; border: 1px solid #2a2e38;
       border-top: 3px solid #f97316; border-radius: 12px;
-      padding: 36px 32px; text-align: center;
+      padding: 40px 32px; text-align: center;
     }
-    #key-screen .logo {
-      width: 52px; height: 52px; border-radius: 10px;
+    #login-screen .logo {
+      width: 56px; height: 56px; border-radius: 10px;
       background: linear-gradient(135deg, #f97316, #ea580c);
       display: flex; align-items: center; justify-content: center;
-      font-size: 22px; font-weight: 700; color: #fff; margin: 0 auto 20px;
+      font-size: 24px; font-weight: 700; color: #fff; margin: 0 auto 16px;
     }
-    #key-screen h1 { color: #f1f5f9; font-size: 18px; letter-spacing: 0.08em; margin-bottom: 6px; }
-    #key-screen p  { color: #475569; font-size: 12px; margin-bottom: 28px; line-height: 1.6; }
-    #key-screen input {
+    #login-screen h1 { color: #f1f5f9; font-size: 18px; letter-spacing: 0.08em; margin-bottom: 4px; }
+    .subtitle { color: #475569; font-size: 11px; letter-spacing: 0.08em; margin-bottom: 32px; }
+    .field-wrap { margin-bottom: 16px; text-align: left; }
+    .field-label { color: #64748b; font-size: 10px; letter-spacing: 0.1em; margin-bottom: 6px; display: block; }
+    #login-screen input {
       width: 100%; background: #0d0f12; border: 1px solid #2a2e38;
       border-radius: 8px; padding: 11px 14px; color: #f1f5f9;
       font-size: 12px; font-family: inherit; outline: none;
-      transition: border-color 0.15s; margin-bottom: 12px;
+      transition: border-color 0.15s;
     }
-    #key-screen input:focus { border-color: #f97316; }
-    #key-screen button {
+    #login-screen input:focus { border-color: #f97316; }
+    #login-screen button {
       width: 100%; background: linear-gradient(135deg, #f97316, #ea580c);
       border: none; border-radius: 8px; padding: 12px; color: #fff;
       font-size: 13px; font-family: inherit; font-weight: 700;
-      letter-spacing: 0.06em; cursor: pointer; transition: opacity 0.15s;
+      letter-spacing: 0.06em; cursor: pointer; transition: opacity 0.15s; margin-top: 8px;
     }
-    #key-screen button:hover { opacity: 0.9; }
-    #key-screen .note { color: #334155; font-size: 10px; margin-top: 14px; line-height: 1.6; }
-    #key-screen .badge {
-      display: inline-block; background: #052e16; color: #22c55e;
-      font-size: 10px; padding: 3px 10px; border-radius: 20px;
-      margin-bottom: 20px; letter-spacing: 0.08em;
-    }
-    #key-error { color: #f87171; font-size: 11px; margin-top: 10px; display: none; }
+    #login-screen button:hover { opacity: 0.9; }
+    #login-error { color: #f87171; font-size: 11px; margin-top: 12px; display: none; }
+    .login-footer { color: #1e293b; font-size: 10px; margin-top: 24px; }
+
+    /* CHAT */
     #chat-screen {
       display: none; width: 100%; max-width: 720px;
       height: calc(100vh - 32px); flex-direction: column;
@@ -64,7 +65,20 @@
     }
     #header-title { color: #f1f5f9; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; }
     #header-sub   { color: #475569; font-size: 10px; letter-spacing: 0.1em; margin-top: 2px; }
-    #status { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    #header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+    #user-badge {
+      display: flex; align-items: center; gap: 7px;
+      background: #1a1d24; border: 1px solid #2a2e38;
+      border-radius: 20px; padding: 4px 12px 4px 4px;
+    }
+    #user-avatar {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700; color: #fff;
+    }
+    #user-name { color: #94a3b8; font-size: 10px; }
+    #status { display: flex; align-items: center; gap: 6px; }
     #dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: glow 2s ease-in-out infinite; }
     @keyframes glow { 0%,100%{box-shadow:0 0 4px #22c55e} 50%{box-shadow:0 0 12px #22c55e} }
     #status-txt { color: #22c55e; font-size: 10px; letter-spacing: 0.1em; }
@@ -92,7 +106,7 @@
       font-size: 11px; font-weight: 700; color: #fff;
     }
     .avatar.bot  { background: linear-gradient(135deg, #f97316, #ea580c); }
-    .avatar.user { background: #1e3a5f; }
+    .avatar.user { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
     .bubble {
       max-width: 78%; padding: 10px 14px; font-size: 12px;
       line-height: 1.7; color: #cbd5e1; white-space: pre-wrap; border: 1px solid #2a2e38;
@@ -126,17 +140,25 @@
 </head>
 <body>
 
-<div id="key-screen">
+<!-- LOGIN -->
+<div id="login-screen">
   <div class="logo">L</div>
   <h1>LOGIASSIST</h1>
-  <div class="badge">✓ GRATIS · SIN TARJETA</div>
-  <p>Ingresá tu API Key de Groq<br/>para activar el asistente.</p>
-  <input type="password" id="api-key-input" placeholder="gsk_..." />
-  <button onclick="activar()">ACTIVAR LOGIASSIST</button>
-  <div id="key-error">⚠️ Clave inválida. Debe empezar con gsk_</div>
-  <p class="note">Obtenés tu key gratis en console.groq.com<br/>No se guarda en ningún servidor.</p>
+  <p class="subtitle">SISTEMA OPERATIVO OCASA</p>
+  <div class="field-wrap">
+    <span class="field-label">USUARIO</span>
+    <input type="text" id="login-user" placeholder="usuario@ocasa.com" />
+  </div>
+  <div class="field-wrap">
+    <span class="field-label">CONTRASEÑA</span>
+    <input type="password" id="login-pass" placeholder="••••••••" />
+  </div>
+  <button onclick="login()">INICIAR SESIÓN</button>
+  <div id="login-error">⚠️ Usuario o contraseña incorrectos.</div>
+  <p class="login-footer">OCASA · Sistema de Gestión Logística v2.1</p>
 </div>
 
+<!-- CHAT -->
 <div id="chat-screen">
   <div id="header">
     <div class="logo-sm">L</div>
@@ -144,9 +166,15 @@
       <div id="header-title">LOGIASSIST</div>
       <div id="header-sub">SISTEMA OPERATIVO OCASA · EN LÍNEA</div>
     </div>
-    <div id="status">
-      <div id="dot"></div>
-      <span id="status-txt">ACTIVO</span>
+    <div id="header-right">
+      <div id="user-badge">
+        <div id="user-avatar">M</div>
+        <span id="user-name">manu.ocasa</span>
+      </div>
+      <div id="status">
+        <div id="dot"></div>
+        <span id="status-txt">ACTIVO</span>
+      </div>
     </div>
   </div>
   <div id="messages">
@@ -167,6 +195,12 @@
 </div>
 
 <script>
+const USERS = {
+  'manu.ocasa': { pass: 'ocasa2025', inicial: 'M' }
+};
+
+const API_KEY = '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';
+
 const SYSTEM = `Sos LogiAssist, el asistente conversacional inteligente de OCASA para operaciones logísticas. Respondés siempre en español argentino, de forma clara y concisa.
 
 === BASE DE PEDIDOS ===
@@ -189,26 +223,30 @@ const SYSTEM = `Sos LogiAssist, el asistente conversacional inteligente de OCASA
 - Stock bajo (R-02): Generar Orden de Compra OC-XX y avisar al jefe de depósito.
 - Retención aduanera (AD-03): 1) Identificar documentación faltante. 2) Formulario AD-07. 3) Contactar despachante. Plazo: 48hs hábiles.
 - Accidente (SEG-01): 1) Llamar 911 si hay heridos. 2) Interno 205. 3) Preservar área. 4) Formulario SEG-01.
-- Pedido entregado pero cliente no lo recibió: 1) Verificar comprobante de entrega (foto o firma). 2) Contactar al transportista. 3) Registrar reclamo con código RCL. 4) Notificar al cliente dentro de las 2 horas.
+- Pedido entregado pero cliente no lo recibió: 1) Verificar comprobante (foto o firma). 2) Contactar al transportista. 3) Registrar reclamo con código RCL. 4) Notificar al cliente dentro de las 2 horas.
 
 Si te preguntan por un pedido o SKU que no está en la base de datos, indicalo claramente y sugerí pasos a seguir. Mantené el contexto. Sé directo y útil.`;
 
-let apiKey = '';
 let history = [];
 let loading = false;
 
-function activar() {
-  const k = document.getElementById('api-key-input').value.trim();
-  const errEl = document.getElementById('key-error');
-  if (!k || k.length < 10) { errEl.style.display = 'block'; return; }
-  apiKey = k;
-  errEl.style.display = 'none';
-  document.getElementById('key-screen').style.display = 'none';
-  document.getElementById('chat-screen').style.display = 'flex';
+function login() {
+  const user = document.getElementById('login-user').value.trim();
+  const pass = document.getElementById('login-pass').value;
+  const errEl = document.getElementById('login-error');
+  if (USERS[user] && USERS[user].pass === pass) {
+    document.getElementById('user-name').textContent = user;
+    document.getElementById('user-avatar').textContent = USERS[user].inicial;
+    errEl.style.display = 'none';
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('chat-screen').style.display = 'flex';
+  } else {
+    errEl.style.display = 'block';
+  }
 }
 
-document.getElementById('api-key-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter') activar();
+document.getElementById('login-pass').addEventListener('keydown', e => {
+  if (e.key === 'Enter') login();
 });
 
 const msgsEl = document.getElementById('messages');
@@ -246,14 +284,11 @@ async function sendMessage() {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + apiKey
+        'Authorization': 'Bearer ' + API_KEY
       },
       body: JSON.stringify({
         model: 'llama-3.3-70b-versatile',
-        messages: [
-          { role: 'system', content: SYSTEM },
-          ...history
-        ],
+        messages: [{ role: 'system', content: SYSTEM }, ...history],
         max_tokens: 1024
       })
     });
@@ -290,7 +325,7 @@ function appendMsg(role, text, isError) {
   row.className = 'msg-row ' + role;
   const av = document.createElement('div');
   av.className = 'avatar ' + role;
-  av.textContent = role === 'user' ? 'OP' : 'L';
+  av.textContent = role === 'user' ? 'M' : 'L';
   const bubble = document.createElement('div');
   bubble.className = 'bubble ' + role + (isError ? ' error' : '');
   bubble.textContent = text;
@@ -304,7 +339,7 @@ let typingEl = null;
 function showTyping() {
   typingEl = document.createElement('div');
   typingEl.className = 'msg-row';
-  typingEl.innerHTML = `<div class="avatar bot">L</div><div class="bubble bot" style="padding:12px 16px;display:flex;gap:5px;align-items:center"><div class="dot-anim"></div><div class="dot-anim"></div><div class="dot-anim"></div></div>`;
+  typingEl.innerHTML = '<div class="avatar bot">L</div><div class="bubble bot" style="padding:12px 16px;display:flex;gap:5px;align-items:center"><div class="dot-anim"></div><div class="dot-anim"></div><div class="dot-anim"></div></div>';
   msgsEl.appendChild(typingEl);
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
