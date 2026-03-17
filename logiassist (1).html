@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>LogiAssist · OCASA</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #0d0f12;
+      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      display: flex; align-items: center; justify-content: center;
+      min-height: 100vh; padding: 16px;
+    }
+
+    /* KEY SCREEN */
+    #key-screen {
+      width: 100%; max-width: 420px;
+      background: #13161c;
+      border: 1px solid #2a2e38;
+      border-top: 3px solid #f97316;
+      border-radius: 12px;
+      padding: 36px 32px;
+      text-align: center;
+    }
+    #key-screen .logo {
+      width: 52px; height: 52px; border-radius: 10px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: #fff;
+      margin: 0 auto 20px;
+    }
+    #key-screen h1 { color: #f1f5f9; font-size: 18px; letter-spacing: 0.08em; margin-bottom: 6px; }
+    #key-screen p  { color: #475569; font-size: 12px; margin-bottom: 28px; line-height: 1.6; }
+    #key-screen input {
+      width: 100%; background: #0d0f12; border: 1px solid #2a2e38;
+      border-radius: 8px; padding: 11px 14px; color: #f1f5f9;
+      font-size: 12px; font-family: inherit; outline: none;
+      transition: border-color 0.15s; margin-bottom: 12px;
+    }
+    #key-screen input:focus { border-color: #f97316; }
+    #key-screen button {
+      width: 100%; background: linear-gradient(135deg, #f97316, #ea580c);
+      border: none; border-radius: 8px; padding: 12px;
+      color: #fff; font-size: 13px; font-family: inherit;
+      font-weight: 700; letter-spacing: 0.06em; cursor: pointer;
+      transition: opacity 0.15s;
+    }
+    #key-screen button:hover { opacity: 0.9; }
+    #key-screen .note { color: #334155; font-size: 10px; margin-top: 14px; line-height: 1.6; }
+    #key-error { color: #f87171; font-size: 11px; margin-top: 10px; display: none; }
+
+    /* CHAT SCREEN */
+    #chat-screen {
+      display: none;
+      width: 100%; max-width: 720px;
+      height: calc(100vh - 32px);
+      flex-direction: column;
+      border: 1px solid #1e2028;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    #header {
+      background: #13161c;
+      border-bottom: 2px solid #f97316;
+      padding: 14px 20px;
+      display: flex; align-items: center; gap: 14px;
+      flex-shrink: 0;
+    }
+    .logo-sm {
+      width: 40px; height: 40px; border-radius: 8px;
+      background: linear-gradient(135deg, #f97316, #ea580c);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0;
+    }
+    #header-title { color: #f1f5f9; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; }
+    #header-sub   { color: #475569; font-size: 10px; letter-spacing: 0.1em; margin-top: 2px; }
+    #status { margin-left: auto; display: flex; align-items: center; gap: 6px; }
+    #dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: glow 2s ease-in-out infinite; }
+    @keyframes glow { 0%,100%{box-shadow:0 0 4px #22c55e} 50%{box-shadow:0 0 12px #22c55e} }
+    #status-txt { color: #22c55e; font-size: 10px; letter-spacing: 0.1em; }
+
+    #messages {
+      flex: 1; overflow-y: auto; padding: 16px;
+      background: #0d0f12;
+      scrollbar-width: thin; scrollbar-color: #2a2e38 transparent;
+    }
+    #empty { text-align: center; padding: 36px 10px; }
+    #empty-icon  { font-size: 32px; margin-bottom: 14px; }
+    #empty-title { color: #475569; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 6px; }
+    #empty-sub   { color: #2d3748; font-size: 11px; margin-bottom: 28px; }
+    .suggestion {
+      background: #13161c; border: 1px solid #2a2e38;
+      border-left: 3px solid #f97316; color: #94a3b8;
+      font-size: 11px; padding: 9px 14px; border-radius: 6px;
+      cursor: pointer; text-align: left; width: 100%; max-width: 420px;
+      display: block; margin: 0 auto 8px; font-family: inherit;
+      transition: all 0.15s;
+    }
+    .suggestion:hover { color: #f1f5f9; background: #1a1d24; border-left-color: #fb923c; }
+
+    .msg-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; }
+    .msg-row.user { flex-direction: row-reverse; }
+    .avatar {
+      width: 30px; height: 30px; border-radius: 6px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 700; color: #fff;
+    }
+    .avatar.bot  { background: linear-gradient(135deg, #f97316, #ea580c); }
+    .avatar.user { background: #1e3a5f; }
+    .bubble {
+      max-width: 78%; padding: 10px 14px; font-size: 12px;
+      line-height: 1.7; color: #cbd5e1; white-space: pre-wrap;
+      border: 1px solid #2a2e38;
+    }
+    .bubble.bot  { background: #13161c; border-radius: 4px 10px 10px 10px; }
+    .bubble.user { background: #111827; border-color: #1e3a5f; border-radius: 10px 4px 10px 10px; }
+    .bubble.error { border-color: #7f1d1d; background: #1c0a0a; color: #f87171; }
+
+    .dot-anim { width: 6px; height: 6px; border-radius: 50%; background: #f97316; animation: bounce 1.2s ease-in-out infinite; }
+    .dot-anim:nth-child(2) { animation-delay: 0.2s; }
+    .dot-anim:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes bounce { 0%,100%{transform:scale(0.8);opacity:0.4} 50%{transform:scale(1.1);opacity:1} }
+
+    #input-area {
+      background: #13161c; border-top: 1px solid #2a2e38;
+      padding: 12px 16px; display: flex; gap: 10px; flex-shrink: 0;
+    }
+    #msg-input {
+      flex: 1; background: #0d0f12; border: 1px solid #2a2e38;
+      border-radius: 8px; padding: 9px 13px; color: #f1f5f9;
+      font-size: 12px; font-family: inherit; resize: none;
+      outline: none; line-height: 1.5; transition: border-color 0.15s;
+    }
+    #msg-input:focus { border-color: #f97316; }
+    #send-btn {
+      background: #1e2028; border: none; border-radius: 8px;
+      padding: 9px 16px; color: #475569; font-size: 11px;
+      font-family: inherit; cursor: not-allowed; font-weight: 700;
+      letter-spacing: 0.06em; transition: all 0.15s; white-space: nowrap;
+    }
+    #send-btn.active { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; cursor: pointer; }
+  </style>
+</head>
+<body>
+
+<!-- PANTALLA DE API KEY -->
+<div id="key-screen">
+  <div class="logo">L</div>
+  <h1>LOGIASSIST</h1>
+  <p>Ingresá tu API Key de Anthropic<br/>para activar el asistente.</p>
+  <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+  <button onclick="activar()">ACTIVAR LOGIASSIST</button>
+  <div id="key-error">⚠️ Clave inválida. Verificá que sea correcta.</div>
+  <p class="note">Tu clave no se guarda en ningún servidor.<br/>Solo se usa localmente en esta sesión.</p>
+</div>
+
+<!-- PANTALLA DE CHAT -->
+<div id="chat-screen">
+  <div id="header">
+    <div class="logo-sm">L</div>
+    <div>
+      <div id="header-title">LOGIASSIST</div>
+      <div id="header-sub">SISTEMA OPERATIVO OCASA · EN LÍNEA</div>
+    </div>
+    <div id="status">
+      <div id="dot"></div>
+      <span id="status-txt">ACTIVO</span>
+    </div>
+  </div>
+
+  <div id="messages">
+    <div id="empty">
+      <div id="empty-icon">📦</div>
+      <div id="empty-title">LISTO PARA OPERAR</div>
+      <div id="empty-sub">Consultá pedidos, stock o procedimientos operativos</div>
+      <button class="suggestion" onclick="sendSuggestion(this)">→ ¿Dónde está el pedido #458921?</button>
+      <button class="suggestion" onclick="sendSuggestion(this)">→ ¿Cuánto stock hay del SKU 12345?</button>
+      <button class="suggestion" onclick="sendSuggestion(this)">→ ¿Qué hago si el embalaje llegó dañado?</button>
+      <button class="suggestion" onclick="sendSuggestion(this)">→ El pedido #459100 está retenido, ¿qué hago?</button>
+    </div>
+  </div>
+
+  <div id="input-area">
+    <textarea id="msg-input" placeholder="Consultá un pedido, SKU o procedimiento..." rows="1"></textarea>
+    <button id="send-btn" onclick="sendMessage()">ENVIAR</button>
+  </div>
+</div>
+
+<script>
+const SYSTEM = `Sos LogiAssist, el asistente conversacional inteligente de OCASA para operaciones logísticas. Respondés siempre en español argentino, de forma clara y concisa.
+
+=== BASE DE PEDIDOS ===
+- Pedido #458921: Estado "En distribución", destino Buenos Aires, salida desde depósito Ezeiza el 14/03, transportista Ramiro González, ETA 17/03.
+- Pedido #458745: Estado "Entregado", entregado el 13/03 a las 14:32hs, receptor: María López.
+- Pedido #459100: Estado "Retenido en aduana", requiere documentación adicional (formulario AD-07), contactar supervisor.
+- Pedido #457890: Estado "Pendiente de despacho", en Rack C4 Nivel 2, turno tarde asignado.
+- Pedido #460001: Estado "Devolución en proceso", motivo: embalaje dañado, iniciado el 15/03.
+
+=== STOCK E INVENTARIO ===
+- SKU 12345 (Caja electrónica A): 234 unidades. Rack B2, Nivel 3. Disponibles: 189.
+- SKU 78901 (Pallet componentes B): 12 unidades. Rack A1, Nivel 1. STOCK BAJO - punto de reorden.
+- SKU 33421 (Insumo embalaje C): 1200 unidades. Rack D5, Nivel 2. Disponibles: 1180.
+- SKU 99002 (Equipo frágil D): SIN STOCK. Último ingreso: 01/03.
+- SKU 55678 (Componente E): 87 unidades. Rack F3, Nivel 4. Disponibles: 87.
+
+=== PROCEDIMIENTOS OPERATIVOS ===
+- Embalaje dañado (S-04): 1) Fotografiar el paquete. 2) Completar Formulario S-04. 3) Notificar supervisor en 30 minutos. 4) Aislar en Sector R.
+- Mercadería faltante (S-07): 1) Verificar manifiesto. 2) Registrar con código FALT. 3) Notificar al cliente en 2 horas. 4) Formulario S-07.
+- Stock bajo (R-02): Generar Orden de Compra OC-XX y avisar al jefe de depósito.
+- Retención aduanera (AD-03): 1) Identificar documentación faltante. 2) Formulario AD-07. 3) Contactar despachante. Plazo: 48hs hábiles.
+- Accidente (SEG-01): 1) Llamar 911 si hay heridos. 2) Interno 205. 3) Preservar área. 4) Formulario SEG-01.
+- Pedido entregado pero cliente no lo recibió: 1) Verificar comprobante de entrega (foto o firma). 2) Contactar al transportista. 3) Registrar reclamo con código RCL. 4) Notificar al cliente con número de reclamo dentro de las 2 horas.
+
+Si te preguntan por un pedido o SKU que no está en la base de datos, indicalo claramente y sugerí los pasos a seguir según el procedimiento más parecido. Mantené el contexto de la conversación. Sé directo y útil.`;
+
+let apiKey = '';
+let history = [];
+let loading = false;
+
+function activar() {
+  const k = document.getElementById('api-key-input').value.trim();
+  const errEl = document.getElementById('key-error');
+  if (!k || k.length < 20) {
+    errEl.style.display = 'block';
+    return;
+  }
+  apiKey = k;
+  errEl.style.display = 'none';
+  document.getElementById('key-screen').style.display = 'none';
+  document.getElementById('chat-screen').style.display = 'flex';
+}
+
+document.getElementById('api-key-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') activar();
+});
+
+const msgsEl = document.getElementById('messages');
+const inputEl = document.getElementById('msg-input');
+const btnEl   = document.getElementById('send-btn');
+
+inputEl.addEventListener('input', () => {
+  btnEl.className = inputEl.value.trim() && !loading ? 'active' : '';
+});
+inputEl.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+});
+
+function sendSuggestion(btn) {
+  inputEl.value = btn.textContent.replace('→ ', '').trim();
+  sendMessage();
+}
+
+async function sendMessage() {
+  const text = inputEl.value.trim();
+  if (!text || loading) return;
+  inputEl.value = '';
+  btnEl.className = '';
+  loading = true;
+
+  const empty = document.getElementById('empty');
+  if (empty) empty.remove();
+
+  history.push({ role: 'user', content: text });
+  appendMsg('user', text);
+  showTyping();
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-haiku-4-5-20251001',
+        max_tokens: 1024,
+        system: SYSTEM,
+        messages: history
+      })
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      const msg = data?.error?.message || `Error del servidor (${res.status})`;
+      hideTyping();
+      appendMsg('bot', '⚠️ ' + msg, true);
+      history.pop();
+      loading = false;
+      btnEl.className = inputEl.value.trim() ? 'active' : '';
+      return;
+    }
+
+    const reply = data.content?.[0]?.text || 'Respuesta vacía.';
+    history.push({ role: 'assistant', content: reply });
+    hideTyping();
+    appendMsg('bot', reply);
+
+  } catch (err) {
+    hideTyping();
+    appendMsg('bot', '⚠️ Error de red. Verificá tu conexión e intentá de nuevo.', true);
+    history.pop();
+  }
+
+  loading = false;
+  btnEl.className = inputEl.value.trim() ? 'active' : '';
+}
+
+function appendMsg(role, text, isError) {
+  const row = document.createElement('div');
+  row.className = 'msg-row ' + role;
+  const av = document.createElement('div');
+  av.className = 'avatar ' + role;
+  av.textContent = role === 'user' ? 'OP' : 'L';
+  const bubble = document.createElement('div');
+  bubble.className = 'bubble ' + role + (isError ? ' error' : '');
+  bubble.textContent = text;
+  row.appendChild(av);
+  row.appendChild(bubble);
+  msgsEl.appendChild(row);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+let typingEl = null;
+function showTyping() {
+  typingEl = document.createElement('div');
+  typingEl.className = 'msg-row';
+  typingEl.innerHTML = `<div class="avatar bot">L</div><div class="bubble bot" style="padding:12px 16px;display:flex;gap:5px;align-items:center"><div class="dot-anim"></div><div class="dot-anim"></div><div class="dot-anim"></div></div>`;
+  msgsEl.appendChild(typingEl);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+function hideTyping() {
+  if (typingEl) { typingEl.remove(); typingEl = null; }
+}
+</script>
+</body>
+</html>
