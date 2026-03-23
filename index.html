@@ -1,336 +1,393 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>LogiAssist · OCASA</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0f1117;
+      --surface: #1a1d27;
+      --surface2: #22263a;
+      --border: #2e3248;
+      --accent: #6366f1;
+      --accent2: #8b5cf6;
+      --accent-glow: rgba(99,102,241,0.3);
+      --green: #10b981;
+      --red: #ef4444;
+      --amber: #f59e0b;
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --muted2: #334155;
+    }
+
     body {
-      background: #0d0f12;
-      font-family: 'IBM Plex Mono', 'Courier New', monospace;
+      background: var(--bg);
+      font-family: 'Inter', sans-serif;
       display: flex; align-items: center; justify-content: center;
       min-height: 100vh; padding: 16px;
+      background-image: radial-gradient(ellipse at 20% 20%, rgba(99,102,241,0.08) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 80%, rgba(139,92,246,0.06) 0%, transparent 60%);
     }
 
-    /* LOGIN */
+    /* ── LOGIN ── */
     #login-screen {
-      width: 100%; max-width: 400px;
-      background: #13161c; border: 1px solid #2a2e38;
-      border-top: 3px solid #f97316; border-radius: 12px;
-      padding: 40px 32px; text-align: center;
+      width: 100%; max-width: 420px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 44px 36px;
+      text-align: center;
+      box-shadow: 0 0 60px rgba(99,102,241,0.08);
     }
-    #login-screen .logo {
-      width: 56px; height: 56px; border-radius: 10px;
-      background: linear-gradient(135deg, #f97316, #ea580c);
+    .brand {
       display: flex; align-items: center; justify-content: center;
-      font-size: 24px; font-weight: 700; color: #fff; margin: 0 auto 16px;
+      gap: 12px; margin-bottom: 32px;
     }
-    #login-screen h1 { color: #f1f5f9; font-size: 18px; letter-spacing: 0.08em; margin-bottom: 4px; }
-    .subtitle { color: #475569; font-size: 11px; letter-spacing: 0.08em; margin-bottom: 32px; }
-    .field-wrap { margin-bottom: 16px; text-align: left; }
-    .field-label { color: #64748b; font-size: 10px; letter-spacing: 0.1em; margin-bottom: 6px; display: block; }
-    #login-screen input {
-      width: 100%; background: #0d0f12; border: 1px solid #2a2e38;
-      border-radius: 8px; padding: 11px 14px; color: #f1f5f9;
-      font-size: 12px; font-family: inherit; outline: none;
-      transition: border-color 0.15s;
+    .brand-icon {
+      width: 48px; height: 48px; border-radius: 14px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: #fff;
+      box-shadow: 0 4px 20px var(--accent-glow);
     }
-    #login-screen input:focus { border-color: #f97316; }
-    #login-screen button {
-      width: 100%; background: linear-gradient(135deg, #f97316, #ea580c);
-      border: none; border-radius: 8px; padding: 12px; color: #fff;
-      font-size: 13px; font-family: inherit; font-weight: 700;
-      letter-spacing: 0.06em; cursor: pointer; transition: opacity 0.15s; margin-top: 8px;
-    }
-    #login-screen button:hover { opacity: 0.9; }
-    #login-error { color: #f87171; font-size: 11px; margin-top: 12px; display: none; }
-    .login-footer { color: #1e293b; font-size: 10px; margin-top: 24px; }
+    .brand-text h1 { color: var(--text); font-size: 22px; font-weight: 700; text-align: left; }
+    .brand-text p  { color: var(--muted); font-size: 12px; text-align: left; margin-top: 2px; }
 
-    /* CHAT */
+    .login-divider { height: 1px; background: var(--border); margin: 0 0 28px; }
+    .field { margin-bottom: 16px; text-align: left; }
+    .field label { display: block; font-size: 12px; font-weight: 500; color: var(--muted); margin-bottom: 7px; letter-spacing: 0.03em; }
+    .field input {
+      width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 10px; padding: 11px 14px; color: var(--text);
+      font-size: 14px; font-family: inherit; outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+    .login-btn {
+      width: 100%; margin-top: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border: none; border-radius: 10px; padding: 13px;
+      color: #fff; font-size: 14px; font-family: inherit;
+      font-weight: 600; cursor: pointer; transition: opacity 0.2s, transform 0.1s;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .login-btn:hover { opacity: 0.92; }
+    .login-btn:active { transform: scale(0.99); }
+    #login-error {
+      color: var(--red); font-size: 13px; margin-top: 12px;
+      display: none; background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      border-radius: 8px; padding: 9px 12px;
+    }
+    .login-footer { color: var(--muted2); font-size: 11px; margin-top: 24px; }
+
+    /* ── CHAT ── */
     #chat-screen {
-      display: none; width: 100%; max-width: 720px;
-      height: calc(100vh - 32px); flex-direction: column;
-      border: 1px solid #1e2028; border-radius: 12px; overflow: hidden;
+      display: none; width: 100%; max-width: 760px;
+      height: calc(100vh - 32px);
+      flex-direction: column;
+      border: 1px solid var(--border);
+      border-radius: 20px; overflow: hidden;
+      box-shadow: 0 0 60px rgba(99,102,241,0.08);
     }
+
+    /* Header */
     #header {
-      background: #13161c; border-bottom: 2px solid #f97316;
-      padding: 14px 20px; display: flex; align-items: center; gap: 14px; flex-shrink: 0;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 16px 22px;
+      display: flex; align-items: center; gap: 14px;
+      flex-shrink: 0;
     }
-    .logo-sm {
-      width: 40px; height: 40px; border-radius: 8px;
-      background: linear-gradient(135deg, #f97316, #ea580c);
+    .h-logo {
+      width: 38px; height: 38px; border-radius: 11px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
       display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: 700; color: #fff; flex-shrink: 0;
+      font-size: 16px; font-weight: 700; color: #fff; flex-shrink: 0;
+      box-shadow: 0 2px 12px var(--accent-glow);
     }
-    #header-title { color: #f1f5f9; font-size: 14px; font-weight: 700; letter-spacing: 0.08em; }
-    #header-sub   { color: #475569; font-size: 10px; letter-spacing: 0.1em; margin-top: 2px; }
-    #header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
-    #user-badge {
-      display: flex; align-items: center; gap: 7px;
-      background: #1a1d24; border: 1px solid #2a2e38;
-      border-radius: 20px; padding: 4px 12px 4px 4px;
+    #h-title { color: var(--text); font-size: 15px; font-weight: 600; }
+    #h-sub   { color: var(--muted); font-size: 11px; margin-top: 1px; }
+    #h-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+    #user-pill {
+      display: flex; align-items: center; gap: 8px;
+      background: var(--surface2); border: 1px solid var(--border);
+      border-radius: 24px; padding: 5px 14px 5px 5px;
     }
-    #user-avatar {
-      width: 22px; height: 22px; border-radius: 50%;
-      background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 10px; font-weight: 700; color: #fff;
-    }
-    #user-name { color: #94a3b8; font-size: 10px; }
-    #status { display: flex; align-items: center; gap: 6px; }
-    #dot { width: 8px; height: 8px; border-radius: 50%; background: #22c55e; animation: glow 2s ease-in-out infinite; }
-    @keyframes glow { 0%,100%{box-shadow:0 0 4px #22c55e} 50%{box-shadow:0 0 12px #22c55e} }
-    #status-txt { color: #22c55e; font-size: 10px; letter-spacing: 0.1em; }
-    #messages {
-      flex: 1; overflow-y: auto; padding: 16px; background: #0d0f12;
-      scrollbar-width: thin; scrollbar-color: #2a2e38 transparent;
-    }
-    #empty { text-align: center; padding: 36px 10px; }
-    #empty-icon  { font-size: 32px; margin-bottom: 14px; }
-    #empty-title { color: #475569; font-size: 12px; letter-spacing: 0.08em; margin-bottom: 6px; }
-    #empty-sub   { color: #2d3748; font-size: 11px; margin-bottom: 28px; }
-    .suggestion {
-      background: #13161c; border: 1px solid #2a2e38;
-      border-left: 3px solid #f97316; color: #94a3b8;
-      font-size: 11px; padding: 9px 14px; border-radius: 6px;
-      cursor: pointer; text-align: left; width: 100%; max-width: 420px;
-      display: block; margin: 0 auto 8px; font-family: inherit; transition: all 0.15s;
-    }
-    .suggestion:hover { color: #f1f5f9; background: #1a1d24; border-left-color: #fb923c; }
-    .msg-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 14px; }
-    .msg-row.user { flex-direction: row-reverse; }
-    .avatar {
-      width: 30px; height: 30px; border-radius: 6px; flex-shrink: 0;
+    #u-avatar {
+      width: 26px; height: 26px; border-radius: 50%;
+      background: linear-gradient(135deg, #06b6d4, #0284c7);
       display: flex; align-items: center; justify-content: center;
       font-size: 11px; font-weight: 700; color: #fff;
     }
-    .avatar.bot  { background: linear-gradient(135deg, #f97316, #ea580c); }
-    .avatar.user { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
-    .bubble {
-      max-width: 78%; padding: 10px 14px; font-size: 12px;
-      line-height: 1.7; color: #cbd5e1; white-space: pre-wrap; border: 1px solid #2a2e38;
+    #u-name { color: #94a3b8; font-size: 12px; font-weight: 500; }
+    #online-badge {
+      display: flex; align-items: center; gap: 5px;
+      background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2);
+      border-radius: 20px; padding: 4px 10px;
     }
-    .bubble.bot  { background: #13161c; border-radius: 4px 10px 10px 10px; }
-    .bubble.user { background: #111827; border-color: #1e3a5f; border-radius: 10px 4px 10px 10px; }
-    .bubble.error { border-color: #7f1d1d; background: #1c0a0a; color: #f87171; }
-    .dot-anim { width: 6px; height: 6px; border-radius: 50%; background: #f97316; animation: bounce 1.2s ease-in-out infinite; }
-    .dot-anim:nth-child(2) { animation-delay: 0.2s; }
-    .dot-anim:nth-child(3) { animation-delay: 0.4s; }
-    @keyframes bounce { 0%,100%{transform:scale(0.8);opacity:0.4} 50%{transform:scale(1.1);opacity:1} }
+    .green-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: pulse 2s ease-in-out infinite; }
+    @keyframes pulse { 0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,0.4)} 50%{box-shadow:0 0 0 4px rgba(16,185,129,0)} }
+    #online-txt { color: var(--green); font-size: 11px; font-weight: 500; }
+
+    /* Messages */
+    #messages {
+      flex: 1; overflow-y: auto; padding: 20px;
+      background: var(--bg);
+      scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+    }
+    #empty { text-align: center; padding: 40px 10px; }
+    #empty-emoji { font-size: 40px; margin-bottom: 16px; }
+    #empty-title { color: var(--text); font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+    #empty-sub   { color: var(--muted); font-size: 13px; margin-bottom: 32px; line-height: 1.6; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 500px; margin: 0 auto; }
+    .chip {
+      background: var(--surface); border: 1px solid var(--border);
+      color: #94a3b8; font-size: 12px; font-weight: 500;
+      padding: 8px 16px; border-radius: 20px;
+      cursor: pointer; font-family: inherit;
+      transition: all 0.2s;
+    }
+    .chip:hover { background: var(--surface2); border-color: var(--accent); color: var(--text); }
+
+    .msg-row { display: flex; gap: 10px; align-items: flex-end; margin-bottom: 16px; }
+    .msg-row.user { flex-direction: row-reverse; }
+    .av {
+      width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+    .av.bot  { background: linear-gradient(135deg, var(--accent), var(--accent2)); }
+    .av.user { background: linear-gradient(135deg, #06b6d4, #0284c7); }
+    .bubble {
+      max-width: 76%; padding: 12px 16px; font-size: 14px;
+      line-height: 1.7; color: #e2e8f0; white-space: pre-wrap;
+    }
+    .bubble.bot  {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 4px 16px 16px 16px;
+    }
+    .bubble.user {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 16px 4px 16px 16px;
+      color: #fff;
+    }
+    .bubble.error {
+      background: rgba(239,68,68,0.08);
+      border: 1px solid rgba(239,68,68,0.2);
+      color: #fca5a5; border-radius: 4px 16px 16px 16px;
+    }
+
+    .typing-dots { display: flex; gap: 5px; padding: 4px 0; align-items: center; }
+    .td { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: td 1.2s ease-in-out infinite; }
+    .td:nth-child(2) { animation-delay: 0.2s; }
+    .td:nth-child(3) { animation-delay: 0.4s; }
+    @keyframes td { 0%,100%{transform:scale(0.7);opacity:0.4} 50%{transform:scale(1);opacity:1} }
+
+    /* Input */
     #input-area {
-      background: #13161c; border-top: 1px solid #2a2e38;
-      padding: 12px 16px; display: flex; gap: 10px; flex-shrink: 0;
+      background: var(--surface); border-top: 1px solid var(--border);
+      padding: 14px 18px; display: flex; gap: 10px; flex-shrink: 0;
+      align-items: flex-end;
     }
     #msg-input {
-      flex: 1; background: #0d0f12; border: 1px solid #2a2e38;
-      border-radius: 8px; padding: 9px 13px; color: #f1f5f9;
-      font-size: 12px; font-family: inherit; resize: none;
-      outline: none; line-height: 1.5; transition: border-color 0.15s;
+      flex: 1; background: var(--bg); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 11px 15px; color: var(--text);
+      font-size: 14px; font-family: inherit; resize: none;
+      outline: none; line-height: 1.5; transition: border-color 0.2s, box-shadow 0.2s;
+      max-height: 120px;
     }
-    #msg-input:focus { border-color: #f97316; }
+    #msg-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
+    #msg-input::placeholder { color: var(--muted2); }
     #send-btn {
-      background: #1e2028; border: none; border-radius: 8px;
-      padding: 9px 16px; color: #475569; font-size: 11px;
-      font-family: inherit; cursor: not-allowed; font-weight: 700;
-      letter-spacing: 0.06em; transition: all 0.15s; white-space: nowrap;
+      background: var(--surface2); border: 1.5px solid var(--border);
+      border-radius: 12px; padding: 11px 18px;
+      color: var(--muted); font-size: 13px; font-family: inherit;
+      cursor: not-allowed; font-weight: 600; transition: all 0.2s;
+      white-space: nowrap; flex-shrink: 0;
     }
-    #send-btn.active { background: linear-gradient(135deg, #f97316, #ea580c); color: #fff; cursor: pointer; }
+    #send-btn.on {
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-color: transparent; color: #fff; cursor: pointer;
+      box-shadow: 0 4px 16px var(--accent-glow);
+    }
+    #send-btn.on:hover { opacity: 0.92; }
   </style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="login-screen">
-  <div class="logo">L</div>
-  <h1>LOGIASSIST</h1>
-  <p class="subtitle">SISTEMA OPERATIVO OCASA</p>
-  <div class="field-wrap">
-    <span class="field-label">USUARIO</span>
-    <input type="text" id="login-user" placeholder="usuario@ocasa.com" />
+  <div class="brand">
+    <div class="brand-icon">L</div>
+    <div class="brand-text">
+      <h1>LogiAssist</h1>
+      <p>Sistema Operativo · OCASA</p>
+    </div>
   </div>
-  <div class="field-wrap">
-    <span class="field-label">CONTRASEÑA</span>
-    <input type="password" id="login-pass" placeholder="••••••••" />
+  <div class="login-divider"></div>
+  <div class="field">
+    <label>Usuario</label>
+    <input type="text" id="login-user" placeholder="usuario@ocasa.com" autocomplete="username"/>
   </div>
-  <button onclick="login()">INICIAR SESIÓN</button>
-  <div id="login-error">⚠️ Usuario o contraseña incorrectos.</div>
-  <p class="login-footer">OCASA · Sistema de Gestión Logística v2.1</p>
+  <div class="field">
+    <label>Contraseña</label>
+    <input type="password" id="login-pass" placeholder="••••••••" autocomplete="current-password"/>
+  </div>
+  <button class="login-btn" onclick="login()">Iniciar sesión</button>
+  <div id="login-error">⚠️ Usuario o contraseña incorrectos. Intentá de nuevo.</div>
+  <p class="login-footer">OCASA · Gestión Logística v2.1 · Acceso restringido</p>
 </div>
 
 <!-- CHAT -->
 <div id="chat-screen">
   <div id="header">
-    <div class="logo-sm">L</div>
+    <div class="h-logo">L</div>
     <div>
-      <div id="header-title">LOGIASSIST</div>
-      <div id="header-sub">SISTEMA OPERATIVO OCASA · EN LÍNEA</div>
+      <div id="h-title">LogiAssist</div>
+      <div id="h-sub">Asistente de operaciones · OCASA</div>
     </div>
-    <div id="header-right">
-      <div id="user-badge">
-        <div id="user-avatar">M</div>
-        <span id="user-name">manu.ocasa</span>
+    <div id="h-right">
+      <div id="user-pill">
+        <div id="u-avatar">M</div>
+        <span id="u-name">manu.ocasa</span>
       </div>
-      <div id="status">
-        <div id="dot"></div>
-        <span id="status-txt">ACTIVO</span>
+      <div id="online-badge">
+        <div class="green-dot"></div>
+        <span id="online-txt">En línea</span>
       </div>
     </div>
   </div>
+
   <div id="messages">
     <div id="empty">
-      <div id="empty-icon">📦</div>
-      <div id="empty-title">LISTO PARA OPERAR</div>
-      <div id="empty-sub">Consultá pedidos, stock o procedimientos operativos</div>
-      <button class="suggestion" onclick="sendSuggestion(this)">→ ¿Dónde está el pedido #458921?</button>
-      <button class="suggestion" onclick="sendSuggestion(this)">→ ¿Cuánto stock hay del SKU 12345?</button>
-      <button class="suggestion" onclick="sendSuggestion(this)">→ ¿Qué hago si el embalaje llegó dañado?</button>
-      <button class="suggestion" onclick="sendSuggestion(this)">→ El pedido #459100 está retenido, ¿qué hago?</button>
+      <div id="empty-emoji">👋</div>
+      <div id="empty-title">¡Hola! ¿En qué te puedo ayudar hoy?</div>
+      <div id="empty-sub">Podés consultarme sobre pedidos, stock disponible<br/>o qué hacer ante cualquier situación operativa.</div>
+      <div class="chips">
+        <button class="chip" onclick="suggest(this)">📦 ¿Dónde está el pedido #458921?</button>
+        <button class="chip" onclick="suggest(this)">📊 Stock del SKU 12345</button>
+        <button class="chip" onclick="suggest(this)">🔧 El embalaje llegó dañado</button>
+        <button class="chip" onclick="suggest(this)">🚨 Pedido #459100 retenido en aduana</button>
+      </div>
     </div>
   </div>
+
   <div id="input-area">
-    <textarea id="msg-input" placeholder="Consultá un pedido, SKU o procedimiento..." rows="1"></textarea>
-    <button id="send-btn" onclick="sendMessage()">ENVIAR</button>
+    <textarea id="msg-input" placeholder="Escribí tu consulta acá..." rows="1"></textarea>
+    <button id="send-btn" onclick="send()">Enviar →</button>
   </div>
 </div>
 
 <script>
-const USERS = {
-  'manu.ocasa': { pass: 'ocasa2025', inicial: 'M' }
-};
-
-const API_KEY = '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';
-
-const SYSTEM = `Sos LogiAssist, el asistente conversacional inteligente de OCASA para operaciones logísticas. Respondés siempre en español argentino, de forma clara y concisa.
-
-=== BASE DE PEDIDOS ===
-- Pedido #458921: Estado "En distribución", destino Buenos Aires, salida desde depósito Ezeiza el 14/03, transportista Ramiro González, ETA 17/03.
-- Pedido #458745: Estado "Entregado", entregado el 13/03 a las 14:32hs, receptor: María López.
-- Pedido #459100: Estado "Retenido en aduana", requiere documentación adicional (formulario AD-07), contactar supervisor.
-- Pedido #457890: Estado "Pendiente de despacho", en Rack C4 Nivel 2, turno tarde asignado.
-- Pedido #460001: Estado "Devolución en proceso", motivo: embalaje dañado, iniciado el 15/03.
-
-=== STOCK E INVENTARIO ===
-- SKU 12345 (Caja electrónica A): 234 unidades. Rack B2, Nivel 3. Disponibles: 189.
-- SKU 78901 (Pallet componentes B): 12 unidades. Rack A1, Nivel 1. STOCK BAJO - punto de reorden.
-- SKU 33421 (Insumo embalaje C): 1200 unidades. Rack D5, Nivel 2. Disponibles: 1180.
-- SKU 99002 (Equipo frágil D): SIN STOCK. Último ingreso: 01/03.
-- SKU 55678 (Componente E): 87 unidades. Rack F3, Nivel 4. Disponibles: 87.
-
-=== PROCEDIMIENTOS OPERATIVOS ===
-- Embalaje dañado (S-04): 1) Fotografiar el paquete. 2) Completar Formulario S-04. 3) Notificar supervisor en 30 minutos. 4) Aislar en Sector R.
-- Mercadería faltante (S-07): 1) Verificar manifiesto. 2) Registrar con código FALT. 3) Notificar al cliente en 2 horas. 4) Formulario S-07.
-- Stock bajo (R-02): Generar Orden de Compra OC-XX y avisar al jefe de depósito.
-- Retención aduanera (AD-03): 1) Identificar documentación faltante. 2) Formulario AD-07. 3) Contactar despachante. Plazo: 48hs hábiles.
-- Accidente (SEG-01): 1) Llamar 911 si hay heridos. 2) Interno 205. 3) Preservar área. 4) Formulario SEG-01.
-- Pedido entregado pero cliente no lo recibió: 1) Verificar comprobante (foto o firma). 2) Contactar al transportista. 3) Registrar reclamo con código RCL. 4) Notificar al cliente dentro de las 2 horas.
-
-Si te preguntan por un pedido o SKU que no está en la base de datos, indicalo claramente y sugerí pasos a seguir. Mantené el contexto. Sé directo y útil.`;
-
+const USERS = { 'manu.ocasa': 'ocasa2025' };
 let history = [];
 let loading = false;
 
 function login() {
   const user = document.getElementById('login-user').value.trim();
   const pass = document.getElementById('login-pass').value;
-  const errEl = document.getElementById('login-error');
-  if (USERS[user] && USERS[user].pass === pass) {
-    document.getElementById('user-name').textContent = user;
-    document.getElementById('user-avatar').textContent = USERS[user].inicial;
-    errEl.style.display = 'none';
+  const err  = document.getElementById('login-error');
+  if (USERS[user] === pass) {
+    document.getElementById('u-name').textContent = user;
+    document.getElementById('u-avatar').textContent = user[0].toUpperCase();
+    err.style.display = 'none';
     document.getElementById('login-screen').style.display = 'none';
     document.getElementById('chat-screen').style.display = 'flex';
   } else {
-    errEl.style.display = 'block';
+    err.style.display = 'block';
   }
 }
+document.getElementById('login-pass').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
 
-document.getElementById('login-pass').addEventListener('keydown', e => {
-  if (e.key === 'Enter') login();
-});
-
-const msgsEl = document.getElementById('messages');
+const msgsEl  = document.getElementById('messages');
 const inputEl = document.getElementById('msg-input');
 const btnEl   = document.getElementById('send-btn');
 
 inputEl.addEventListener('input', () => {
-  btnEl.className = inputEl.value.trim() && !loading ? 'active' : '';
+  btnEl.className = inputEl.value.trim() && !loading ? 'on' : '';
+  inputEl.style.height = 'auto';
+  inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
 });
 inputEl.addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
 });
 
-function sendSuggestion(btn) {
-  inputEl.value = btn.textContent.replace('→ ', '').trim();
-  sendMessage();
+function suggest(btn) {
+  inputEl.value = btn.textContent.replace(/^[^\s]+\s/, '').trim();
+  send();
 }
 
-async function sendMessage() {
+async function send() {
   const text = inputEl.value.trim();
   if (!text || loading) return;
   inputEl.value = '';
+  inputEl.style.height = 'auto';
   btnEl.className = '';
   loading = true;
 
   const empty = document.getElementById('empty');
   if (empty) empty.remove();
 
+  // Keep last 10 messages for context
   history.push({ role: 'user', content: text });
-  appendMsg('user', text);
+  if (history.length > 20) history = history.slice(-20);
+
+  addMsg('user', text);
   showTyping();
 
   try {
-    const res = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const res = await fetch('/api/chat', {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + API_KEY
-      },
-      body: JSON.stringify({
-        model: 'llama-3.3-70b-versatile',
-        messages: [{ role: 'system', content: SYSTEM }, ...history],
-        max_tokens: 1024
-      })
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: history.slice(-20) })
     });
 
     const data = await res.json();
 
     if (!res.ok) {
-      const msg = data?.error?.message || `Error (${res.status})`;
       hideTyping();
-      appendMsg('bot', '⚠️ ' + msg, true);
+      addMsg('bot', '⚠️ ' + (data.error || 'Algo salió mal, intentá de nuevo.'), true);
       history.pop();
       loading = false;
-      btnEl.className = inputEl.value.trim() ? 'active' : '';
       return;
     }
 
-    const reply = data.choices?.[0]?.message?.content || 'Respuesta vacía.';
-    history.push({ role: 'assistant', content: reply });
+    history.push({ role: 'assistant', content: data.reply });
     hideTyping();
-    appendMsg('bot', reply);
+    addMsg('bot', data.reply);
 
-  } catch (err) {
+  } catch {
     hideTyping();
-    appendMsg('bot', '⚠️ Error de red. Verificá tu conexión e intentá de nuevo.', true);
+    addMsg('bot', '⚠️ No pude conectarme. Revisá tu conexión e intentá de nuevo.', true);
     history.pop();
   }
 
   loading = false;
-  btnEl.className = inputEl.value.trim() ? 'active' : '';
+  btnEl.className = inputEl.value.trim() ? 'on' : '';
 }
 
-function appendMsg(role, text, isError) {
+function addMsg(role, text, isError) {
   const row = document.createElement('div');
   row.className = 'msg-row ' + role;
   const av = document.createElement('div');
-  av.className = 'avatar ' + role;
-  av.textContent = role === 'user' ? 'M' : 'L';
+  av.className = 'av ' + role;
+  av.textContent = role === 'user'
+    ? (document.getElementById('u-avatar').textContent || 'M')
+    : 'L';
   const bubble = document.createElement('div');
   bubble.className = 'bubble ' + role + (isError ? ' error' : '');
   bubble.textContent = text;
-  row.appendChild(av);
-  row.appendChild(bubble);
+  if (role === 'user') { row.appendChild(bubble); row.appendChild(av); }
+  else                 { row.appendChild(av); row.appendChild(bubble); }
   msgsEl.appendChild(row);
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
@@ -339,13 +396,11 @@ let typingEl = null;
 function showTyping() {
   typingEl = document.createElement('div');
   typingEl.className = 'msg-row';
-  typingEl.innerHTML = '<div class="avatar bot">L</div><div class="bubble bot" style="padding:12px 16px;display:flex;gap:5px;align-items:center"><div class="dot-anim"></div><div class="dot-anim"></div><div class="dot-anim"></div></div>';
+  typingEl.innerHTML = `<div class="av bot">L</div><div class="bubble bot" style="padding:14px 18px"><div class="typing-dots"><div class="td"></div><div class="td"></div><div class="td"></div></div></div>`;
   msgsEl.appendChild(typingEl);
   msgsEl.scrollTop = msgsEl.scrollHeight;
 }
-function hideTyping() {
-  if (typingEl) { typingEl.remove(); typingEl = null; }
-}
+function hideTyping() { if (typingEl) { typingEl.remove(); typingEl = null; } }
 </script>
 </body>
 </html>
